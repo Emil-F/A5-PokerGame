@@ -1,6 +1,6 @@
 package edu.ntnu.idatt2003.emil.a5.model.users;
 
-import edu.ntnu.idatt2003.emil.a5.model.Hand;
+import edu.ntnu.idatt2003.emil.a5.model.hand.Hand;
 
 public abstract class User {
   private final String name;

@@ -20,7 +20,7 @@ public class DeckOfCards {
   }
 
   public List<PlayingCard> getCards() {
-    return cards;
+    return this.cards;
   }
 
   public void stockCards() {

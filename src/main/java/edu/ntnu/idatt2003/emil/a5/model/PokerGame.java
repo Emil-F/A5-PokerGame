@@ -53,11 +53,23 @@ public class PokerGame {
     }
   }
 
-  public void startGame() {}
+  public void startGame() {
+    dealCards();
+  }
 
   public void stopGame() {}
 
-  public void dealCards() {}
+  public void dealCards() {
+    deck.stockCards();
+    this.communityCards.clear();
+    this.player.getHand().getCards().clear();
+
+    this.communityCards.addAll(deck.dealHand(5));
+    this.player.getHand().getCards().addAll(deck.dealHand(5));
+    this.player.getHand().getCards().addAll(this.communityCards);
+
+    this.player.getHand().getCards().forEach(System.out::println);
+  }
 
   public void determineWinner() {}
 }
