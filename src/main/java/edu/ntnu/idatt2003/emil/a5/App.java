@@ -1,7 +1,8 @@
 package edu.ntnu.idatt2003.emil.a5;
 
-import edu.ntnu.idatt2003.emil.a5.controller.GameController;
-import edu.ntnu.idatt2003.emil.a5.view.MainView;
+import edu.ntnu.idatt2003.emil.a5.controller.PokerController;
+import edu.ntnu.idatt2003.emil.a5.model.PokerGame;
+import edu.ntnu.idatt2003.emil.a5.view.PokerView;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -16,9 +17,13 @@ public class App extends Application {
 
   @Override
   public void start(Stage stage) throws Exception {
-    GameController gameController = new GameController();
-    MainView mainView = new MainView(gameController);
-    Scene scene = new Scene(mainView, 1280, 720);
+    PokerGame game = new PokerGame();
+    PokerController controller = new PokerController(game);
+    PokerView view = new PokerView(controller);
+    Scene scene = new Scene(view, 1280, 720);
+
+    System.out.println(game.getPlayer().toString());
+    game.getBots().forEach(bot -> System.out.println(bot.toString()));
 
     try {
       Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon.jpg"), "Icon cannot be null"));
