@@ -1,6 +1,6 @@
 package edu.ntnu.idatt2003.emil.a5.view.sub;
 
-import edu.ntnu.idatt2003.emil.a5.controller.GameController;
+import edu.ntnu.idatt2003.emil.a5.controller.PokerController;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -8,10 +8,10 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 public class CommunityCardsView extends StackPane {
-  private GameController gameController;
+  private PokerController pokerController;
 
-  public CommunityCardsView(GameController gameController) {
-    this.gameController = gameController;
+  public CommunityCardsView(PokerController pokerController) {
+    this.pokerController = pokerController;
     getStylesheets().add(getClass().getResource("/css/CommunityCards.css").toExternalForm());
     getChildren().add(getCardRow());
     setId("community_cards");
@@ -21,7 +21,7 @@ public class CommunityCardsView extends StackPane {
   public HBox getCardRow() {
     HBox cards = new HBox();
     cards.setId("cards");
-    for (String c : gameController.getCommunityCards()) {
+    for (String c : pokerController.getCommunityCards()) {
       cards.getChildren().add(getCard(c));
     }
     cards.setSpacing(15);
