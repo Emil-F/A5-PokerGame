@@ -10,9 +10,17 @@ public class DeckOfCards {
   private final List<PlayingCard> cards;
 
   public DeckOfCards() {
-    rand = new Random();
-    cards = new ArrayList<>();
+    this.rand = new Random();
+    this.cards = new ArrayList<>();
     stockCards();
+  }
+
+  public char[] getSuit() {
+    return suit;
+  }
+
+  public List<PlayingCard> getCards() {
+    return cards;
   }
 
   public void stockCards() {
@@ -27,14 +35,6 @@ public class DeckOfCards {
       cards.add(new PlayingCard(suit[index], face));
       face++;
     }
-  }
-
-  public char[] getSuit() {
-    return suit;
-  }
-
-  public List<PlayingCard> getCards() {
-    return cards;
   }
 
   public List<PlayingCard> dealHand(int n) {
