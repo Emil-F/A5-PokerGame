@@ -20,7 +20,7 @@ public class PokerGame {
   // private int pot;
   private int round;
 
-  private ObservableList<PlayingCard> communityCardsObservable = FXCollections.observableArrayList();
+  private final ObservableList<PlayingCard> observableCommunityCards = FXCollections.observableArrayList();
 
   public PokerGame() {
     this.deck = new DeckOfCards();
@@ -28,14 +28,7 @@ public class PokerGame {
     this.bots = new ArrayList<>();
     this.communityCards = new ArrayList<>();
     this.round = 1;
-  }
-
-  public DeckOfCards getDeck() {
-    return deck;
-  }
-
-  public List<PlayingCard> getCommunityCards() {
-    return communityCards;
+    populateBots(3);
   }
 
   public String getCommunityCardsString() {
@@ -64,8 +57,8 @@ public class PokerGame {
     return round;
   }
 
-  public ObservableList<PlayingCard> getCommunityCardsObservable() {
-    return communityCardsObservable;
+  public ObservableList<PlayingCard> getObservableCommunityCards() {
+    return observableCommunityCards;
   }
 
   public void setPlayer(Player player) {
@@ -81,8 +74,7 @@ public class PokerGame {
     }
   }
 
-  public void startGame(int botCount) {
-    populateBots(botCount);
+  public void startGame() {
     dealCards();
 
     System.out.println(getCommunityCardsString());
@@ -97,6 +89,7 @@ public class PokerGame {
   public void dealCards() {
     this.deck.restockCards();
     this.communityCards.clear();
+    this.observableCommunityCards.clear();
 
     this.communityCards.addAll(deck.dealHand(5));
 
@@ -104,6 +97,8 @@ public class PokerGame {
     for(Bot bot : this.bots) {
       bot.getHand().setCards(deck.dealHand(2));
     }
+
+    this.observableCommunityCards.addAll(this.communityCards);
   }
 
   public void determineWinner() {}
@@ -116,5 +111,5 @@ public class PokerGame {
 
   private void RiverRound() {}
 
-  private void ShowDownRound() {}
+  private void ShowDown() {}
 }

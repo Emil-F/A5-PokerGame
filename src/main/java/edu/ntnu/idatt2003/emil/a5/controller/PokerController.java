@@ -4,6 +4,8 @@ import edu.ntnu.idatt2003.emil.a5.model.PlayingCard;
 import edu.ntnu.idatt2003.emil.a5.model.PokerGame;
 import edu.ntnu.idatt2003.emil.a5.model.users.Bot;
 import edu.ntnu.idatt2003.emil.a5.model.users.Player;
+import edu.ntnu.idatt2003.emil.a5.view.sub.CommunityCards;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 import java.util.List;
@@ -14,20 +16,13 @@ public class PokerController {
   private final MainController controller;
   private final PokerGame game;
 
-  public PokerController(MainController controller, PokerGame pokerGame) {
-    this.controller = controller;
+  public PokerController(MainController mainController, PokerGame pokerGame) {
+    this.controller = mainController;
     this.game = pokerGame;
-    game.startGame(3);
   }
 
   public ObservableList<PlayingCard> getCommunityCards() {
-    return game.getCommunityCardsObservable();
-  }
-
-  // Remove or not
-  public void addCommunityCard() {
-    System.out.println("Adding community card");
-    game.getCommunityCardsObservable().add(new PlayingCard('S', 1));
+    return game.getObservableCommunityCards();
   }
 
   public Player getPlayer() {
@@ -38,7 +33,17 @@ public class PokerController {
     return game.getBots();
   }
 
-  public void startGame() {}
+  public void handleStartGame() {
+    game.startGame();
+  }
+
+  public void handleCheck() {}
+
+  public void handleCall() {}
+
+  public void handleRaise() {}
+
+  public void handleAllIn() {}
 
   public void stopGame() {}
 }

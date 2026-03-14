@@ -25,7 +25,7 @@ public class App extends Application {
       System.err.println("Exception message: " + e.getMessage());
     }
 
-    stage.setTitle("Card Game");
+    stage.setTitle("Poker Game");
     stage.setScene(scene);
     stage.show();
   }
