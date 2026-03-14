@@ -1,16 +1,19 @@
 package edu.ntnu.idatt2003.emil.a5.model.hand;
 
 import edu.ntnu.idatt2003.emil.a5.model.PlayingCard;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class Hand {
   private static final Logger logger = Logger.getLogger(Hand.class.getName());
   private List<PlayingCard> cards;
+  private final ObservableList<PlayingCard> obsCards = FXCollections.observableArrayList();
   private final char[] suit = {'S', 'H', 'D', 'C'};
 
   public Hand() {
@@ -36,24 +39,26 @@ public class Hand {
     return cards;
   }
 
+  public ObservableList<PlayingCard> getObsCards() {
+    return obsCards;
+  }
+
   public void setCards(List<PlayingCard> cards) {
     this.cards = cards;
+    this.obsCards.setAll(cards);
   }
 
   /**
    * <p>Calculates the hand's total card value</p>
    *
-   * @param communityCards cards shared by all the players in the game.
+   * @param combinedCards hand + communityCards.
    * @return the hand's total card value as an {@link Integer}
    */
-  public int calculateCardTotal(List<PlayingCard> communityCards) {
-    Objects.requireNonNull(communityCards, "communityCards is null");
+  public int calculateCardTotal(List<PlayingCard> combinedCards) {
+    Objects.requireNonNull(combinedCards, "communityCards is null");
 
     AtomicInteger cardTotal = new AtomicInteger();
-    cards.forEach(card -> {
-      cardTotal.addAndGet(card.getFace());
-    });
-    communityCards.forEach(card -> {
+    combinedCards.forEach(card -> {
       cardTotal.addAndGet(card.getFace());
     });
     return cardTotal.get();
@@ -81,82 +86,132 @@ public class Hand {
    */
   public HandCheckResult checkHand(List<PlayingCard> communityCards) {
     Objects.requireNonNull(communityCards, "communityCards is null");
+    List<PlayingCard> combinedCards = new ArrayList<>();
+    combinedCards.addAll(this.cards);
+    combinedCards.addAll(communityCards);
 
     List<HandRank> ranks = new ArrayList<>();
-    if (hasRoyalFlush(communityCards)) {
+    if (hasRoyalFlush(combinedCards)) {
       ranks.add(HandRank.ROYAL_FLUSH);
     }
-    if (hasStraightFlush(communityCards)) {
+    if (hasStraightFlush(combinedCards)) {
       ranks.add(HandRank.STRAIGHT_FLUSH);
     }
-    if (hasFourOfAKind(communityCards)) {
+    if (hasFourOfAKind(combinedCards)) {
       ranks.add(HandRank.FOUR_OF_A_KIND);
     }
-    if (hasFullHouse(communityCards)) {
+    if (hasFullHouse(combinedCards)) {
       ranks.add(HandRank.FULL_HOUSE);
     }
-    if (hasFlush(communityCards)) {
+    if (hasFlush(combinedCards)) {
       ranks.add(HandRank.FLUSH);
     }
-    if (hasStraight(communityCards)) {
+    if (hasStraight(combinedCards)) {
       ranks.add(HandRank.STRAIGHT);
     }
-    if (hasThreeOfAKind(communityCards)) {
+    if (hasThreeOfAKind(combinedCards)) {
       ranks.add(HandRank.THREE_OF_A_KIND);
     }
-    if (hasTwoPairs(communityCards)) {
+    if (hasTwoPairs(combinedCards)) {
       ranks.add(HandRank.TWO_PAIRS);
     }
-    if (hasOnePair(communityCards)) {
+    if (hasOnePair(combinedCards)) {
       ranks.add(HandRank.ONE_PAIR);
     }
     if (ranks.isEmpty()) {
       ranks.add(HandRank.HIGH_CARD);
     }
 
-    return new HandCheckResult(calculateCardTotal(communityCards), ranks);
+    return new HandCheckResult(calculateCardTotal(combinedCards), ranks);
   }
 
-  protected boolean hasRoyalFlush(List<PlayingCard> communityCards) {
+  /**
+   * <p>Checks if the hand has the rank Royal Flush.</p>
+   * <p>
+   *   A Royal Flush consists of cards with faces [1, 10, 11, 12, 13], all with the same suit.
+   * </p>
+   *
+   * @param combinedCards hand + communityCards
+   * @return true if the hand has a Royal Flush, else false.
+   */
+  protected boolean hasRoyalFlush(List<PlayingCard> combinedCards) {
+    for (char suit : this.suit) {
+      Set<Integer> faces = combinedCards.stream()
+          .filter(card -> card.getSuit() == suit)
+          .map(PlayingCard::getFace)
+          .collect(Collectors.toSet());
 
-    return false;
-  }
-
-  protected boolean hasStraightFlush(List<PlayingCard> communityCards) {
-    return false;
-  }
-
-  protected boolean hasFourOfAKind(List<PlayingCard> communityCards) {
-    return false;
-  }
-
-  protected boolean hasFullHouse(List<PlayingCard> communityCards) {
-    return false;
-  }
-
-  protected boolean hasFlush(List<PlayingCard> communityCards) {
-    for(char s: suit) {
-      long count = cards.stream().filter(card -> card.getSuit() == s).count();
-      if (count >= 5) {
+      if (faces.containsAll(List.of(1, 10, 11, 12, 13))) {
         return true;
       }
     }
+
     return false;
   }
 
-  protected boolean hasStraight(List<PlayingCard> communityCards) {
+  protected boolean hasStraightFlush(List<PlayingCard> combinedCards) {
+    for (char suit : this.suit) {
+      Set<Integer> faces = combinedCards.stream()
+          .filter(card -> card.getSuit() == suit)
+          .map(PlayingCard::getFace)
+          .collect(Collectors.toSet());
+
+      if (faces.containsAll(List.of(7, 8, 9, 10, 11))) {
+        return true;
+      }
+    }
+
     return false;
   }
 
-  protected boolean hasThreeOfAKind(List<PlayingCard> communityCards) {
+  protected boolean hasFourOfAKind(List<PlayingCard> combinedCards) {
+    int maxDistinctFaces = 3;
+    long distinctFacesCount = combinedCards.stream()
+        .map(PlayingCard::getFace)
+        .distinct()
+        .count();
+
+    return distinctFacesCount <= maxDistinctFaces;
+  }
+
+  protected boolean hasFullHouse(List<PlayingCard> combinedCards) {
     return false;
   }
 
-  protected boolean hasTwoPairs(List<PlayingCard> communityCards) {
+  protected boolean hasFlush(List<PlayingCard> combinedCards) {
+    for (char suit : this.suit) {
+      Set<Integer> faces = combinedCards.stream()
+          .filter(card -> card.getSuit() == suit)
+          .map(PlayingCard::getFace)
+          .collect(Collectors.toSet());
+
+      if (faces.size() == 5) {
+        return true;
+      }
+    }
+
     return false;
   }
 
-  protected boolean hasOnePair(List<PlayingCard> communityCards) {
+  protected boolean hasStraight(List<PlayingCard> combinedCards) {
+    return false;
+  }
+
+  protected boolean hasThreeOfAKind(List<PlayingCard> combinedCards) {
+    int maxDistinctFaces = 4;
+    long distinctFacesCount = combinedCards.stream()
+        .map(PlayingCard::getFace)
+        .distinct()
+        .count();
+
+    return distinctFacesCount <= maxDistinctFaces;
+  }
+
+  protected boolean hasTwoPairs(List<PlayingCard> combinedCards) {
+    return false;
+  }
+
+  protected boolean hasOnePair(List<PlayingCard> combinedCards) {
     return false;
   }
 }
