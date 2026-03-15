@@ -1,71 +1,18 @@
-package edu.ntnu.idatt2003.emil.a5.model.hand;
+package edu.ntnu.idatt2003.emil.a5.model.users.hand;
 
 import edu.ntnu.idatt2003.emil.a5.model.PlayingCard;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-/**
- * This class represent a player's hand in the game of Poker.
- */
-public class Hand {
-  private static final Logger logger = Logger.getLogger(Hand.class.getName());
-  private List<PlayingCard> cards;
-  private final ObservableList<PlayingCard> obsCards = FXCollections.observableArrayList();
-  private final char[] suit = {'S', 'H', 'D', 'C'};
+public class HandChecker {
+  private final static Logger logger = Logger.getLogger(HandChecker.class.getName());
+  private final char[] suits = {'S', 'H', 'D', 'C'};
 
-  public Hand() {
-    this.cards = new ArrayList<>();
-  }
-
-  @Override
-  public String toString() {
-    StringBuilder handString = new StringBuilder();
-    handString.append("Hand: [");
-    for (int i = 0; i < this.cards.size(); i++) {
-      if (i == this.cards.size() - 1) {
-        handString.append(this.cards.get(i).getAsString());
-        continue;
-      }
-      handString.append(this.cards.get(i).getAsString()).append(", ");
-    }
-    handString.append("]");
-    return handString.toString();
-  }
-
-  public List<PlayingCard> getCards() {
-    return cards;
-  }
-
-  public ObservableList<PlayingCard> getObsCards() {
-    return obsCards;
-  }
-
-  public void setCards(List<PlayingCard> cards) {
-    this.cards = cards;
-    this.obsCards.setAll(cards);
-  }
-
-  /**
-   * <p>Calculates the hand's total card value</p>
-   *
-   * @param combinedCards hand + communityCards.
-   * @return the hand's total card value as an {@link Integer}
-   */
-  public int calculateCardTotal(List<PlayingCard> combinedCards) {
-    Objects.requireNonNull(combinedCards, "communityCards is null");
-
-    AtomicInteger cardTotal = new AtomicInteger();
-    combinedCards.forEach(card -> {
-      cardTotal.addAndGet(card.getFace());
-    });
-    return cardTotal.get();
-  }
+  public HandChecker() {}
 
   /**
    * <p>
@@ -84,43 +31,43 @@ public class Hand {
    * <li>One Pair</li>
    * <li>High Card</li>
    *
-   * @param communityCards cards shared by all the players in the game.
+   * @param playerHand the player's hand.
+   * @param communityHand hand shared by all players.
    * @return the hands total card value and its combinations as a {@link HandCheckResult}.
    */
-  public HandCheckResult checkHand(List<PlayingCard> communityCards) {
-    Objects.requireNonNull(communityCards, "communityCards is null");
+  public HandCheckResult checkHand(Hand playerHand, Hand communityHand) {
     List<PlayingCard> combinedCards = new ArrayList<>();
-    combinedCards.addAll(this.cards);
-    combinedCards.addAll(communityCards);
+    combinedCards.addAll(playerHand.getCards());
+    combinedCards.addAll(communityHand.getCards());
 
     if (hasRoyalFlush(combinedCards)) {
-      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.ROYAL_FLUSH);
+      return new HandCheckResult(playerHand.calculateCardTotal(communityHand.getCards()), HandRank.ROYAL_FLUSH);
     }
     if (hasStraightFlush(combinedCards)) {
-      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.STRAIGHT_FLUSH);
+      return new HandCheckResult(playerHand.calculateCardTotal(communityHand.getCards()), HandRank.STRAIGHT_FLUSH);
     }
     if (hasFourOfAKind(combinedCards)) {
-      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.FOUR_OF_A_KIND);
+      return new HandCheckResult(playerHand.calculateCardTotal(communityHand.getCards()), HandRank.FOUR_OF_A_KIND);
     }
     if (hasFullHouse(combinedCards)) {
-      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.FULL_HOUSE);
+      return new HandCheckResult(playerHand.calculateCardTotal(communityHand.getCards()), HandRank.FULL_HOUSE);
     }
     if (hasFlush(combinedCards)) {
-      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.FLUSH);
+      return new HandCheckResult(playerHand.calculateCardTotal(communityHand.getCards()), HandRank.FLUSH);
     }
     if (hasStraight(combinedCards)) {
-      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.STRAIGHT);
+      return new HandCheckResult(playerHand.calculateCardTotal(communityHand.getCards()), HandRank.STRAIGHT);
     }
     if (hasThreeOfAKind(combinedCards)) {
-      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.THREE_OF_A_KIND);
+      return new HandCheckResult(playerHand.calculateCardTotal(communityHand.getCards()), HandRank.THREE_OF_A_KIND);
     }
     if (hasTwoPairs(combinedCards)) {
-      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.TWO_PAIRS);
+      return new HandCheckResult(playerHand.calculateCardTotal(communityHand.getCards()), HandRank.TWO_PAIRS);
     }
     if (hasOnePair(combinedCards)) {
-      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.ONE_PAIR);
+      return new HandCheckResult(playerHand.calculateCardTotal(communityHand.getCards()), HandRank.ONE_PAIR);
     }
-    return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.HIGH_CARD);
+    return new HandCheckResult(playerHand.calculateCardTotal(communityHand.getCards()), HandRank.HIGH_CARD);
   }
 
   /**
@@ -132,11 +79,11 @@ public class Hand {
    * @return true if the hand has a Royal Flush, otherwise false.
    */
   protected boolean hasRoyalFlush(List<PlayingCard> combinedCards) {
-    for (char suit : this.suit) {
+    for (char suit : this.suits) {
       Set<Integer> faces = combinedCards.stream()
-          .filter(card -> card.getSuit() == suit)
-          .map(PlayingCard::getFace)
-          .collect(Collectors.toSet());
+        .filter(card -> card.getSuit() == suit)
+        .map(PlayingCard::getFace)
+        .collect(Collectors.toSet());
 
       if (faces.containsAll(List.of(1, 10, 11, 12, 13))) {
         return true;
@@ -211,7 +158,7 @@ public class Hand {
       .map(PlayingCard::getSuit)
       .toList();
 
-    for (char suit : this.suit) {
+    for (char suit : this.suits) {
       if (combinedSuits.stream().filter(s -> s.equals(suit)).count() >= 5) {
         return true;
       };
@@ -273,7 +220,7 @@ public class Hand {
     List<PlayingCard> pairs = getPairs(combinedCards);
 
     if (pairs.size() > 2) {
-      logger.log(Level.WARNING, "hasOnePair() was called even though there are more than one pair present");
+      logger.warning("hasOnePair() was called even though there are more than one pair present");
     }
 
     return pairs.size() == 2;
@@ -281,10 +228,10 @@ public class Hand {
 
   private List<PlayingCard> getStraight(List<PlayingCard> combinedCards) {
     List<Integer> faces = combinedCards.stream()
-        .map(PlayingCard::getFace)
-        .distinct()
-        .sorted()
-        .toList();
+      .map(PlayingCard::getFace)
+      .distinct()
+      .sorted()
+      .toList();
 
     List<Integer> sequentialIdx = new ArrayList<>();
     int lastFaceIdx = 0;
@@ -307,7 +254,7 @@ public class Hand {
     }
 
     return sequentialIdx.stream()
-        .map(combinedCards::get).toList();
+      .map(combinedCards::get).toList();
   }
 
   private List<PlayingCard> getThreeOfAKind(List<PlayingCard> combinedCards) {
@@ -323,9 +270,9 @@ public class Hand {
 
   private List<PlayingCard> getPairs(List<PlayingCard> combinedCards) {
     List<Integer> faces = combinedCards.stream()
-        .map(PlayingCard::getFace)
-        .sorted()
-        .toList();
+      .map(PlayingCard::getFace)
+      .sorted()
+      .toList();
 
     List<Integer> pairs = new ArrayList<>();
     int lastFaceIdx = 0;

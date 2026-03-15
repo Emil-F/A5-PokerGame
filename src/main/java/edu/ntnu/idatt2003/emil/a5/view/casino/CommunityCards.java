@@ -2,14 +2,11 @@ package edu.ntnu.idatt2003.emil.a5.view.sub;
 
 import edu.ntnu.idatt2003.emil.a5.controller.PokerController;
 import edu.ntnu.idatt2003.emil.a5.model.PlayingCard;
+import edu.ntnu.idatt2003.emil.a5.view.Card;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Pos;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-
-import java.util.Objects;
 
 public class CommunityCards extends StackPane {
   private final PokerController controller;
