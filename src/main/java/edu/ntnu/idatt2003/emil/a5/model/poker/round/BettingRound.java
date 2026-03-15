@@ -1,4 +1,4 @@
-package edu.ntnu.idatt2003.emil.a5.model.poker;
+package edu.ntnu.idatt2003.emil.a5.model.poker.round;
 
 import edu.ntnu.idatt2003.emil.a5.model.PlayerAction;
 import edu.ntnu.idatt2003.emil.a5.model.users.User;
@@ -19,7 +19,12 @@ public class BettingRound {
   }
 
   public void check(User user) {
+    if (currentBet > 0) {
 
+    }
+    if (currentBet == 0) {
+
+    }
   }
 
   public void call(User user) {

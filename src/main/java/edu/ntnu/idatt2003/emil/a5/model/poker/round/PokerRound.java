@@ -1,9 +1,8 @@
-package edu.ntnu.idatt2003.emil.a5.model.poker;
+package edu.ntnu.idatt2003.emil.a5.model.poker.round;
 
 import edu.ntnu.idatt2003.emil.a5.model.PlayerAction;
 import edu.ntnu.idatt2003.emil.a5.model.PlayingCard;
 import edu.ntnu.idatt2003.emil.a5.model.users.User;
-import edu.ntnu.idatt2003.emil.a5.model.poker.hand.Hand;
 import edu.ntnu.idatt2003.emil.a5.model.poker.hand.HandChecker;
 
 import java.util.ArrayList;
@@ -16,6 +15,7 @@ public class PokerRound {
   private final Pot pot;
   private final BettingRound bettingRound;
   private final HandChecker handChecker;
+  private User currentPlayer;
 
   public PokerRound() {
     this.roundState = new RoundState();
@@ -36,7 +36,6 @@ public class PokerRound {
 
   public void dealFlop() {
     communityCards.addAll(deck.dealHand(1));
-
   }
 
   public void dealTurn() {
@@ -45,9 +44,13 @@ public class PokerRound {
 
   public void dealRiver() {}
 
-  public void handleAction(User user, PlayerAction action) {}
+  public void handleAction(User user, PlayerAction action) {
+    bettingRound.handleAction(user, action);
+  }
 
-  public void resolveShowdown() {}
+  public void resolveShowdown() {
+    advanceRoundState();
+  }
 
   public void dealHoleCards(List<User> participants) {
     this.deck.restockCards();

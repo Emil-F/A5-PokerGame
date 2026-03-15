@@ -1,4 +1,4 @@
-package edu.ntnu.idatt2003.emil.a5.model.poker;
+package edu.ntnu.idatt2003.emil.a5.model.poker.round;
 
 public class RoundState {
   private Round state = Round.PRE_FLOP;
