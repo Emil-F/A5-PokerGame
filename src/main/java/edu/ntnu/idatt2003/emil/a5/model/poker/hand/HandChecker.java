@@ -1,10 +1,11 @@
-package edu.ntnu.idatt2003.emil.a5.model.users.hand;
+package edu.ntnu.idatt2003.emil.a5.model.poker.hand;
 
 import edu.ntnu.idatt2003.emil.a5.model.PlayingCard;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -13,6 +14,20 @@ public class HandChecker {
   private final char[] suits = {'S', 'H', 'D', 'C'};
 
   public HandChecker() {}
+
+  /**
+   * <p>Calculates the hand's total card value</p>
+   *
+   * @param combinedCards player cards + community cards.
+   * @return the hand's total card value as an {@link Integer}
+   */
+  public int calculateCardTotal(List<PlayingCard> combinedCards) {
+    AtomicInteger cardTotal = new AtomicInteger();
+    combinedCards.forEach(card -> {
+      cardTotal.addAndGet(card.getFace());
+    });
+    return cardTotal.get();
+  }
 
   /**
    * <p>
@@ -31,43 +46,43 @@ public class HandChecker {
    * <li>One Pair</li>
    * <li>High Card</li>
    *
-   * @param playerHand the player's hand.
-   * @param communityHand hand shared by all players.
+   * @param playerCards the player's cards.
+   * @param communityCards cards shared by all players.
    * @return the hands total card value and its combinations as a {@link HandCheckResult}.
    */
-  public HandCheckResult checkHand(Hand playerHand, Hand communityHand) {
+  public HandCheckResult checkHand(List<PlayingCard> playerCards, List<PlayingCard> communityCards) {
     List<PlayingCard> combinedCards = new ArrayList<>();
-    combinedCards.addAll(playerHand.getCards());
-    combinedCards.addAll(communityHand.getCards());
+    combinedCards.addAll(playerCards);
+    combinedCards.addAll(communityCards);
 
     if (hasRoyalFlush(combinedCards)) {
-      return new HandCheckResult(playerHand.calculateCardTotal(communityHand.getCards()), HandRank.ROYAL_FLUSH);
+      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.ROYAL_FLUSH);
     }
     if (hasStraightFlush(combinedCards)) {
-      return new HandCheckResult(playerHand.calculateCardTotal(communityHand.getCards()), HandRank.STRAIGHT_FLUSH);
+      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.STRAIGHT_FLUSH);
     }
     if (hasFourOfAKind(combinedCards)) {
-      return new HandCheckResult(playerHand.calculateCardTotal(communityHand.getCards()), HandRank.FOUR_OF_A_KIND);
+      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.FOUR_OF_A_KIND);
     }
     if (hasFullHouse(combinedCards)) {
-      return new HandCheckResult(playerHand.calculateCardTotal(communityHand.getCards()), HandRank.FULL_HOUSE);
+      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.FULL_HOUSE);
     }
     if (hasFlush(combinedCards)) {
-      return new HandCheckResult(playerHand.calculateCardTotal(communityHand.getCards()), HandRank.FLUSH);
+      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.FLUSH);
     }
     if (hasStraight(combinedCards)) {
-      return new HandCheckResult(playerHand.calculateCardTotal(communityHand.getCards()), HandRank.STRAIGHT);
+      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.STRAIGHT);
     }
     if (hasThreeOfAKind(combinedCards)) {
-      return new HandCheckResult(playerHand.calculateCardTotal(communityHand.getCards()), HandRank.THREE_OF_A_KIND);
+      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.THREE_OF_A_KIND);
     }
     if (hasTwoPairs(combinedCards)) {
-      return new HandCheckResult(playerHand.calculateCardTotal(communityHand.getCards()), HandRank.TWO_PAIRS);
+      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.TWO_PAIRS);
     }
     if (hasOnePair(combinedCards)) {
-      return new HandCheckResult(playerHand.calculateCardTotal(communityHand.getCards()), HandRank.ONE_PAIR);
+      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.ONE_PAIR);
     }
-    return new HandCheckResult(playerHand.calculateCardTotal(communityHand.getCards()), HandRank.HIGH_CARD);
+    return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.HIGH_CARD);
   }
 
   /**

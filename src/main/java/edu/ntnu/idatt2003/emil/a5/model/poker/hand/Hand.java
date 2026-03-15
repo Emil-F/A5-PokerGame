@@ -1,4 +1,4 @@
-package edu.ntnu.idatt2003.emil.a5.model.users.hand;
+package edu.ntnu.idatt2003.emil.a5.model.poker.hand;
 
 import edu.ntnu.idatt2003.emil.a5.model.PlayingCard;
 
@@ -36,28 +36,28 @@ public class Hand {
     return handString.toString();
   }
 
-  public List<PlayingCard> getCards() {
-    return cards;
-  }
-
-  public void setCards(List<PlayingCard> cards) {
-    this.cards = cards;
-  }
-
-  /**
-   * <p>Calculates the hand's total card value</p>
-   *
-   * @param communityCards cards shared by all players.
-   * @return the hand's total card value as an {@link Integer}
-   */
-  public int calculateCardTotal(List<PlayingCard> communityCards) {
-    List<PlayingCard> allCards = new ArrayList<>(this.cards);
-    allCards.addAll(communityCards);
-
-    AtomicInteger cardTotal = new AtomicInteger();
-    allCards.forEach(card -> {
-      cardTotal.addAndGet(card.getFace());
-    });
-    return cardTotal.get();
-  }
+//  public List<PlayingCard> getCards() {
+//    return cards;
+//  }
+//
+//  public void setCards(List<PlayingCard> cards) {
+//    this.cards = cards;
+//  }
+//
+//  /**
+//   * <p>Calculates the hand's total card value</p>
+//   *
+//   * @param communityCards cards shared by all players.
+//   * @return the hand's total card value as an {@link Integer}
+//   */
+//  public int calculateCardTotal(List<PlayingCard> communityCards) {
+//    List<PlayingCard> allCards = new ArrayList<>(this.cards);
+//    allCards.addAll(communityCards);
+//
+//    AtomicInteger cardTotal = new AtomicInteger();
+//    allCards.forEach(card -> {
+//      cardTotal.addAndGet(card.getFace());
+//    });
+//    return cardTotal.get();
+//  }
 }
