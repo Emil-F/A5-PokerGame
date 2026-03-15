@@ -1,6 +1,6 @@
 package edu.ntnu.idatt2003.emil.a5.controller;
 
-import edu.ntnu.idatt2003.emil.a5.model.PokerGame;
+import edu.ntnu.idatt2003.emil.a5.model.poker.PokerGame;
 import edu.ntnu.idatt2003.emil.a5.view.MainView;
 import javafx.scene.layout.BorderPane;
 
