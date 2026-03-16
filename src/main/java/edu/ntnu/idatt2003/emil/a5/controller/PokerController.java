@@ -2,6 +2,7 @@ package edu.ntnu.idatt2003.emil.a5.controller;
 
 import edu.ntnu.idatt2003.emil.a5.model.PlayingCard;
 import edu.ntnu.idatt2003.emil.a5.model.poker.PokerGame;
+import edu.ntnu.idatt2003.emil.a5.model.poker.round.PokerRound;
 import edu.ntnu.idatt2003.emil.a5.model.users.Bot;
 import edu.ntnu.idatt2003.emil.a5.model.users.Player;
 import javafx.beans.property.SimpleStringProperty;
@@ -18,10 +19,11 @@ public class PokerController {
   private final MainController controller;
   private final PokerGame game;
 
-  private ObservableList<PlayingCard> obsCommunityCards = FXCollections.observableArrayList();
-  private ObservableList<PlayingCard> obsPlayerCards = FXCollections.observableArrayList();
+  private final ObservableList<PlayingCard> obsCommunityCards = FXCollections.observableArrayList();
+  private final ObservableList<PlayingCard> obsPlayerCards = FXCollections.observableArrayList();
 
-  private StringProperty currentRound = new SimpleStringProperty();
+  private final StringProperty currentRound = new SimpleStringProperty();
+  private final StringProperty potValue = new SimpleStringProperty();
 
   public PokerController(MainController mainController, PokerGame pokerGame) {
     this.controller = mainController;
@@ -42,6 +44,14 @@ public class PokerController {
     return currentRound;
   }
 
+  public StringProperty getPotValue() {
+    return potValue;
+  }
+
+  public PokerRound getCurrentRoundRound() {
+    return game.getCurrentRound();
+  }
+
   public Player getPlayer() {
     return game.getPlayer();
   }
@@ -59,7 +69,7 @@ public class PokerController {
       case TURN     -> this.currentRound.setValue("Turn");
       case RIVER    -> this.currentRound.setValue("River");
       case SHOWDOWN -> this.currentRound.setValue("Showdown");
-      default       -> this.currentRound.setValue("Error");
+      default       -> this.currentRound.setValue("End");
     }
   }
 

@@ -36,6 +36,11 @@ public class CasinoView extends StackPane {
     Label roundText = new Label("Round: ");
     Label currentRound = new Label("Pre-Flop");
     currentRound.textProperty().bind(controller.getCurrentRound());
+
+    Label potText = new Label("Pot value: ");
+    Label potValue =  new Label("0");
+    potValue.textProperty().bind(controller.getPotValue());
+
     roundInfo.getChildren().addAll(
       roundText,
       currentRound
