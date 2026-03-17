@@ -5,10 +5,8 @@
 }
 
 #cards {
-    -fx-border-color: black;
-    -fx-border-width: 1px;
+
 }
 
 #community_cards {
-    -fx-background-color: cornflowerblue;
 }

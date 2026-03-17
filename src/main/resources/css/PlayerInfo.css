@@ -1,0 +1,10 @@
+.info-box {
+    -fx-padding: 10px;
+    -fx-border-color: black;
+    -fx-border-width: 1px;
+    -fx-font-weight: bold;
+    -fx-pref-width: 300px;
+}
+
+.info {
+}
