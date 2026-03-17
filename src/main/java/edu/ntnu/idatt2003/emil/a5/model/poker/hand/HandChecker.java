@@ -1,6 +1,7 @@
 package edu.ntnu.idatt2003.emil.a5.model.poker.hand;
 
-import edu.ntnu.idatt2003.emil.a5.model.PlayingCard;
+import edu.ntnu.idatt2003.emil.a5.model.poker.PlayingCard;
+import edu.ntnu.idatt2003.emil.a5.model.users.Participant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +19,12 @@ public class HandChecker {
   /**
    * <p>Calculates the hand's total card value</p>
    *
-   * @param combinedCards player cards + community cards.
+   * @param p participant.
    * @return the hand's total card value as an {@link Integer}
    */
-  public int calculateCardTotal(List<PlayingCard> combinedCards) {
+  public int calculateCardTotal(Participant p) {
     AtomicInteger cardTotal = new AtomicInteger();
-    combinedCards.forEach(card -> {
+    p.getCards().forEach(card -> {
       cardTotal.addAndGet(card.getFace());
     });
     return cardTotal.get();
@@ -46,43 +47,43 @@ public class HandChecker {
    * <li>One Pair</li>
    * <li>High Card</li>
    *
-   * @param playerCards the player's cards.
+   * @param participant a participant in the game.
    * @param communityCards cards shared by all players.
    * @return the hands total card value and its combinations as a {@link HandCheckResult}.
    */
-  public HandCheckResult checkHand(List<PlayingCard> playerCards, List<PlayingCard> communityCards) {
+  public HandCheckResult checkHand(Participant participant, List<PlayingCard> communityCards) {
     List<PlayingCard> combinedCards = new ArrayList<>();
-    combinedCards.addAll(playerCards);
+    combinedCards.addAll(participant.getCards());
     combinedCards.addAll(communityCards);
 
     if (hasRoyalFlush(combinedCards)) {
-      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.ROYAL_FLUSH);
+      return new HandCheckResult(participant, calculateCardTotal(participant), HandRank.ROYAL_FLUSH);
     }
     if (hasStraightFlush(combinedCards)) {
-      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.STRAIGHT_FLUSH);
+      return new HandCheckResult(participant, calculateCardTotal(participant), HandRank.STRAIGHT_FLUSH);
     }
     if (hasFourOfAKind(combinedCards)) {
-      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.FOUR_OF_A_KIND);
+      return new HandCheckResult(participant, calculateCardTotal(participant), HandRank.FOUR_OF_A_KIND);
     }
     if (hasFullHouse(combinedCards)) {
-      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.FULL_HOUSE);
+      return new HandCheckResult(participant, calculateCardTotal(participant), HandRank.FULL_HOUSE);
     }
     if (hasFlush(combinedCards)) {
-      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.FLUSH);
+      return new HandCheckResult(participant, calculateCardTotal(participant), HandRank.FLUSH);
     }
     if (hasStraight(combinedCards)) {
-      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.STRAIGHT);
+      return new HandCheckResult(participant, calculateCardTotal(participant), HandRank.STRAIGHT);
     }
     if (hasThreeOfAKind(combinedCards)) {
-      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.THREE_OF_A_KIND);
+      return new HandCheckResult(participant, calculateCardTotal(participant), HandRank.THREE_OF_A_KIND);
     }
-    if (hasTwoPairs(combinedCards)) {
-      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.TWO_PAIRS);
+    if (hasTwoPair(combinedCards)) {
+      return new HandCheckResult(participant, calculateCardTotal(participant), HandRank.TWO_PAIR);
     }
     if (hasOnePair(combinedCards)) {
-      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.ONE_PAIR);
+      return new HandCheckResult(participant, calculateCardTotal(participant), HandRank.ONE_PAIR);
     }
-    return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.HIGH_CARD);
+    return new HandCheckResult(participant, calculateCardTotal(participant), HandRank.HIGH_CARD);
   }
 
   /**
@@ -217,7 +218,7 @@ public class HandChecker {
    * @param combinedCards hand + communityCards
    * @return true if the hand has Two Pairs, otherwise false.
    */
-  protected boolean hasTwoPairs(List<PlayingCard> combinedCards) {
+  protected boolean hasTwoPair(List<PlayingCard> combinedCards) {
     List<PlayingCard> pairs = getPairs(combinedCards);
 
     return pairs.size() > 2;

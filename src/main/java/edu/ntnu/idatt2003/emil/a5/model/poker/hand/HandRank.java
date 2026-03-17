@@ -8,7 +8,7 @@ public enum HandRank {
   FLUSH,
   STRAIGHT,
   THREE_OF_A_KIND,
-  TWO_PAIRS,
+  TWO_PAIR,
   ONE_PAIR,
   HIGH_CARD
 }

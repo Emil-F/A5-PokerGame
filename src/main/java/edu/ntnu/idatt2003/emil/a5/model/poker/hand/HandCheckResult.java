@@ -1,3 +1,6 @@
 package edu.ntnu.idatt2003.emil.a5.model.poker.hand;
 
-public record HandCheckResult(int cardTotal, HandRank ranks) {}
+import edu.ntnu.idatt2003.emil.a5.model.users.Participant;
+
+public record HandCheckResult(Participant participant, int cardTotal, HandRank rank) {
+}
