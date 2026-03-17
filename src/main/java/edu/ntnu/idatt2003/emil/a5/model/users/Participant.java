@@ -1,17 +1,17 @@
 package edu.ntnu.idatt2003.emil.a5.model.users;
 
-import edu.ntnu.idatt2003.emil.a5.model.PlayingCard;
+import edu.ntnu.idatt2003.emil.a5.model.poker.PlayingCard;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class User {
+public abstract class Participant {
   private final String name;
   private List<PlayingCard> cards;
   private int chips;
 
-  public User(String name, int chips) {
+  public Participant(String name, int chips) {
     if (chips < 0) {
       throw new IllegalArgumentException("chips is negative");
     }

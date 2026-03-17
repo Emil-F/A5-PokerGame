@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * This class represents a player in the game.
  */
-public class Player extends User {
+public class Player extends Participant {
   private boolean folded;
 
   /**

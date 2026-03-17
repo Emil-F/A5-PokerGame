@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * This class represents a Bot in the game.
  */
-public class Bot extends User {
+public class Bot extends Participant {
   /**
    * Constructs a new Bot.
    *

@@ -1,6 +1,7 @@
-package edu.ntnu.idatt2003.emil.a5.model.poker;
+package edu.ntnu.idatt2003.emil.a5.model;
 
 import edu.ntnu.idatt2003.emil.a5.model.poker.round.PokerRound;
+import edu.ntnu.idatt2003.emil.a5.model.poker.round.Round;
 import edu.ntnu.idatt2003.emil.a5.model.users.Bot;
 import edu.ntnu.idatt2003.emil.a5.model.users.Player;
 import edu.ntnu.idatt2003.emil.a5.model.users.Participant;
@@ -61,13 +62,19 @@ public class PokerGame {
     }
   }
 
-  public void startGame() throws InterruptedException {
+  public void startGame() {
     participants.clear();
     participants.add(this.player);
     participants.addAll(this.bots);
+    currentRound.resetCards();
+    currentRound.getRoundState().startNewRound();
+    System.out.println("Starting");
+    currentRound.dealPreFlop();
+    logGameInfo();
+  }
 
-    // Start a new PokerRound
-
+  public void advanceRound() {
+    currentRound.getRoundState().advanceRound();
     switch (currentRound.getRoundState().getCurrentState()) {
       case PRE_FLOP -> currentRound.dealPreFlop();
       case FLOP     -> currentRound.dealFlop();
@@ -76,7 +83,6 @@ public class PokerGame {
       case SHOWDOWN -> currentRound.resolveShowdown();
     }
     logGameInfo();
-    currentRound.getRoundState().advanceRound();
   }
 
   public void stopGame() {
